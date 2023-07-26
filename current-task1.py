@@ -1,14 +1,16 @@
-# example of getting the current task from the main corytine
+# example of running a rocoutine
 import asyncio
 
-#define a main corutine
-async def main():
-    #report a message
-    print('main corutine started')
-    #get the current task
-    task = asyncio.current_task()
-    #report its details
-    print(task)
+#define a coroutine
+async def custom_coro():
+    # wait for a tak to be done
+    #await another cotoutine
+    await asyncio.sleep(1)
 
-#start the asyncio program
+# main coroutine
+async def main():
+    # execute my custom coroutine
+    await custom_coro()
+
+# start the coroutine programs
 asyncio.run(main())

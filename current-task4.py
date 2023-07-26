@@ -1,24 +1,25 @@
-#example of gather for many corotines in a list
+# example of waiting for all tasks to complete
+import random
 import asyncio
 import time
 
-#corotine use for a task
-async def task_coro(value):
-    #report a message
-    print(f'{time.ctime()} task {value} executing')
-    #sleep for a moment
-    await asyncio.sleep(1)
+# corotine to execute in a new task
+async def task_coro(arg):
+    # generate a random value between 0 and 1
+    value = random.random()
+    # block for a moment
+    await asyncio.sleep(value)
+    # report the value
+    print(f'{time.ctime()} >task {arg} done with {value}')
 
-#coroutine used for the entry point
+# main corotine
 async def main():
-    #report a message
-    print(f'{time.ctime()} main starting.')
-    #create many coroutines
-    coros = [task_coro(i) for i in range(1000000)]
-    #run the tasks
-    await asyncio.gather(*coros)
-    #report a message
-    print(f'{time.ctime()} main done')
+    # create many task
+    tasks = [asyncio.create_task(task_coro(i)) for i in range(20000)]
+    # wait for all tasks to complete #ALL_COMPLETED, FIRST_COMPLETED, FIRST_EXCEPTION
+    done, pending = await asyncio.wait(tasks, return_when=asyncio.ALL_COMPLETED)
+    # report result
+    print(f'{time.ctime()} All done')
 
-#start the asyncio program
+# start the asyncio program
 asyncio.run(main())
